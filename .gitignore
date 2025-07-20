@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*/node_modules/
+
+# Production builds
+client/build/
+client/dist/
 
 # Environment variables
 .env
@@ -10,20 +12,14 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Build outputs
-client/build/
-client/dist/
-server/dist/
-
-# Uploads and sessions
-server/uploads/
-server/whatsapp-sessions/
-*.session.json
+server/.env
+server/.env.production
 
 # Logs
-logs
-*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
 pids
@@ -61,6 +57,9 @@ jspm_packages/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# dotenv environment variables file
+.env.test
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -101,17 +100,14 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# MongoDB data
-data/
+# Server specific
+server/uploads/
+server/whatsapp-sessions/
+server/logs/
 
-# WhatsApp session files
-.wwebjs_auth/
-.wwebjs_cache/
-
-# PM2 logs
-.pm2/
-
-# Docker
-.dockerignore
-Dockerfile
-docker-compose.yml 
+# Client specific
+client/.env
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local 
