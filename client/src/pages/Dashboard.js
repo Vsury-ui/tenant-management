@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Users, 
-  DollarSign, 
-  AlertTriangle, 
-  CheckCircle, 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  Users,
+  DollarSign,
+  AlertTriangle,
+  CheckCircle,
   TrendingUp,
   Plus,
-  Eye
-} from 'lucide-react';
-import { tenantAPI, rentAPI } from '../services/api';
-import toast from 'react-hot-toast';
+  Eye,
+} from "lucide-react";
+
+import { tenantAPI, rentAPI } from "../services/api";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -19,7 +20,7 @@ const Dashboard = () => {
     totalRent: 0,
     pendingRent: 0,
     overdueRent: 0,
-    paidRent: 0
+    paidRent: 0,
   });
   const [recentTenants, setRecentTenants] = useState([]);
   const [recentRents, setRecentRents] = useState([]);
@@ -32,23 +33,35 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch tenants
       const tenantsResponse = await tenantAPI.getAll({ limit: 1000 });
       const tenants = tenantsResponse.data.tenants || [];
-      
+
       // Fetch rent records
       const currentMonth = new Date().toISOString().slice(0, 7);
-      const rentResponse = await rentAPI.getAll({ month: currentMonth, limit: 1000 });
+      const rentResponse = await rentAPI.getAll({
+        month: currentMonth,
+        limit: 1000,
+      });
       const rentRecords = rentResponse.data.rentRecords || [];
-      
+
       // Calculate stats
       const totalTenants = tenants.length;
-      const activeTenants = tenants.filter(t => t.isActive).length;
-      const totalRent = rentRecords.reduce((sum, rent) => sum + rent.totalAmount, 0);
-      const pendingRent = rentRecords.filter(r => r.status === 'pending').reduce((sum, rent) => sum + rent.totalAmount, 0);
-      const overdueRent = rentRecords.filter(r => r.status === 'overdue').reduce((sum, rent) => sum + rent.totalAmount, 0);
-      const paidRent = rentRecords.filter(r => r.status === 'paid').reduce((sum, rent) => sum + rent.totalAmount, 0);
+      const activeTenants = tenants.filter((t) => t.isActive).length;
+      const totalRent = rentRecords.reduce(
+        (sum, rent) => sum + rent.totalAmount,
+        0
+      );
+      const pendingRent = rentRecords
+        .filter((r) => r.status === "pending")
+        .reduce((sum, rent) => sum + rent.totalAmount, 0);
+      const overdueRent = rentRecords
+        .filter((r) => r.status === "overdue")
+        .reduce((sum, rent) => sum + rent.totalAmount, 0);
+      const paidRent = rentRecords
+        .filter((r) => r.status === "paid")
+        .reduce((sum, rent) => sum + rent.totalAmount, 0);
 
       setStats({
         totalTenants,
@@ -56,18 +69,17 @@ const Dashboard = () => {
         totalRent,
         pendingRent,
         overdueRent,
-        paidRent
+        paidRent,
       });
 
       // Get recent tenants
       setRecentTenants(tenants.slice(0, 5));
-      
+
       // Get recent rent records
       setRecentRents(rentRecords.slice(0, 5));
-
     } catch (error) {
-      toast.error('Failed to load dashboard data');
-      console.error('Dashboard data error:', error);
+      toast.error("Failed to load dashboard data");
+      console.error("Dashboard data error:", error);
     } finally {
       setLoading(false);
     }
@@ -102,7 +114,9 @@ const Dashboard = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Overview of your tenant management system</p>
+          <p className="text-gray-600">
+            Overview of your tenant management system
+          </p>
         </div>
         <div className="flex space-x-3">
           <Link to="/tenants/new" className="btn-primary flex items-center">
@@ -150,24 +164,41 @@ const Dashboard = () => {
         {/* Recent Tenants */}
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Tenants</h3>
-            <Link to="/tenants" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Tenants
+            </h3>
+            <Link
+              to="/tenants"
+              className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+            >
               View all
             </Link>
           </div>
           <div className="space-y-3">
             {recentTenants.length > 0 ? (
               recentTenants.map((tenant) => (
-                <div key={tenant._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div
+                  key={tenant._id}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
                   <div>
                     <p className="font-medium text-gray-900">{tenant.name}</p>
-                    <p className="text-sm text-gray-600">{tenant.contactNumber}</p>
+                    <p className="text-sm text-gray-600">
+                      {tenant.contactNumber}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className={`badge ${tenant.isActive ? 'badge-success' : 'badge-danger'}`}>
-                      {tenant.isActive ? 'Active' : 'Inactive'}
+                    <span
+                      className={`badge ${
+                        tenant.isActive ? "badge-success" : "badge-danger"
+                      }`}
+                    >
+                      {tenant.isActive ? "Active" : "Inactive"}
                     </span>
-                    <Link to={`/tenants/${tenant._id}/edit`} className="text-primary-600 hover:text-primary-700">
+                    <Link
+                      to={`/tenants/${tenant._id}/edit`}
+                      className="text-primary-600 hover:text-primary-700"
+                    >
                       <Eye className="h-4 w-4" />
                     </Link>
                   </div>
@@ -182,34 +213,57 @@ const Dashboard = () => {
         {/* Recent Rent Records */}
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Rent Records</h3>
-            <Link to="/rent" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Rent Records
+            </h3>
+            <Link
+              to="/rent"
+              className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+            >
               View all
             </Link>
           </div>
           <div className="space-y-3">
             {recentRents.length > 0 ? (
               recentRents.map((rent) => (
-                <div key={rent._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div
+                  key={rent._id}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
                   <div>
-                    <p className="font-medium text-gray-900">{rent.tenant?.name}</p>
-                    <p className="text-sm text-gray-600">₹{rent.totalAmount.toLocaleString()}</p>
+                    <p className="font-medium text-gray-900">
+                      {rent.tenant?.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      ₹{rent.totalAmount.toLocaleString()}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className={`badge ${
-                      rent.status === 'paid' ? 'badge-success' : 
-                      rent.status === 'pending' ? 'badge-warning' : 'badge-danger'
-                    }`}>
-                      {rent.status.charAt(0).toUpperCase() + rent.status.slice(1)}
+                    <span
+                      className={`badge ${
+                        rent.status === "paid"
+                          ? "badge-success"
+                          : rent.status === "pending"
+                          ? "badge-warning"
+                          : "badge-danger"
+                      }`}
+                    >
+                      {rent.status.charAt(0).toUpperCase() +
+                        rent.status.slice(1)}
                     </span>
-                    <Link to={`/rent/${rent._id}/edit`} className="text-primary-600 hover:text-primary-700">
+                    <Link
+                      to={`/rent/${rent._id}/edit`}
+                      className="text-primary-600 hover:text-primary-700"
+                    >
                       <Eye className="h-4 w-4" />
                     </Link>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center py-4">No rent records found</p>
+              <p className="text-gray-500 text-center py-4">
+                No rent records found
+              </p>
             )}
           </div>
         </div>
@@ -217,23 +271,36 @@ const Dashboard = () => {
 
       {/* Quick Actions */}
       <div className="card">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Quick Actions
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/tenants/new" className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <Link
+            to="/tenants/new"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <Users className="h-8 w-8 text-primary-600 mr-3" />
             <div>
               <p className="font-medium text-gray-900">Add New Tenant</p>
               <p className="text-sm text-gray-600">Register a new tenant</p>
             </div>
           </Link>
-          <Link to="/rent/generate-monthly" className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <Link
+            to="/rent/generate-monthly"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <TrendingUp className="h-8 w-8 text-success-600 mr-3" />
             <div>
               <p className="font-medium text-gray-900">Generate Monthly Rent</p>
-              <p className="text-sm text-gray-600">Create rent records for all tenants</p>
+              <p className="text-sm text-gray-600">
+                Create rent records for all tenants
+              </p>
             </div>
           </Link>
-          <Link to="/whatsapp" className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <Link
+            to="/whatsapp"
+            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             <DollarSign className="h-8 w-8 text-warning-600 mr-3" />
             <div>
               <p className="font-medium text-gray-900">Send Rent Reminders</p>
@@ -246,4 +313,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

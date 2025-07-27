@@ -9,6 +9,6 @@
     }
   ],
   "env": {
-    "REACT_APP_API_URL": "https://your-backend-domain.onrender.com"
+    "REACT_APP_API_URL": "https://tenant-management-l81s.onrender.com/api"
   }
 } 
